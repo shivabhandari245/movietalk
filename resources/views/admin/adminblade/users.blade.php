@@ -27,10 +27,10 @@
                 </div>
 
                 <div class="user-menu">
-                    <div class="user-profile">
-                        <div class="user-avatar">AM</div>
+                     <div class="user-profile">
+                        <div class="user-avatar"></div>
                         <div>
-                            <div>Admin Manager</div>
+                             <div>{{ Auth::user()->name }}</div>
                         </div>
                     </div>
                 </div>

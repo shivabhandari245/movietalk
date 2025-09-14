@@ -1,34 +1,12 @@
 @extends('admin.adminlayout')
 
 @section('content')
-<div class="container">
-    <div class="main">
-        <!-- Header -->
-        <div class="header">
-            <div class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </div>
-
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search genres...">
-            </div>
-
-            <div class="user-menu">
-                <div class="user-profile">
-                    <div class="user-avatar">AM</div>
-                    <div>
-                        <div>Admin Manager</div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Genre Management Header -->
         <div class="management-header">
             <div class="dashboard-title">
                 <h1>Genre Management</h1>
-                <p>Manage all music genres and categories</p>
+                <p>Manage all genres and categories</p>
             </div>
             <a href="{{ url('admin/addgenres') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Add New Genre

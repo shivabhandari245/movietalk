@@ -109,7 +109,12 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
+        <div class="user-profile">
+                        <div class="user-avatar"></div>
+                        <div>
+                             <div>{{ Auth::user()->name }}</div>
+                        </div>
+                    </div>
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2><i class="fas fa-film"></i> <span>MovieTalk</span></h2>

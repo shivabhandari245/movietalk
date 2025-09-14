@@ -14,25 +14,6 @@
 <div class="container">
     <div class="main">
 
-        <!-- Header -->
-        <div class="header">
-            <div class="menu-toggle"><i class="fas fa-bars"></i></div>
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search...">
-            </div>
-            <div class="user-menu">
-                <div class="notification">
-                    <i class="fas fa-bell"></i>
-                    <div class="notification-badge">3</div>
-                </div>
-                <div class="user-profile">
-                    <div class="user-avatar">AM</div>
-                    <div><div>Admin Manager</div></div>
-                </div>
-            </div>
-        </div>
-
         <!-- Page Title -->
         <div class="dashboard-title">
             <h1>Edit Movie</h1>
