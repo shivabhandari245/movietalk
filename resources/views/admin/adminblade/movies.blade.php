@@ -97,7 +97,8 @@
                             <div style="font-weight: 600;">{{ $data->title }}</div>
                             <div style="font-size: 13px; color: #777;">{{ $data->director }}</div>
                         </td>
-                        <td>{{ $data->genres }}</td>
+<td>{{ implode(', ', $data->category_names) }}</td>
+                        
                         <td>{{ $data->release_date }}</td>
                         <td>
                             <span class="rating-badge">

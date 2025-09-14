@@ -216,10 +216,23 @@ public function search(Request $request)
 
 
     //this is backend movies view
-function moviesdata(){
-        $movies = movie::orderBy('id', 'desc')->get();
-        return view('admin.adminblade.movies',compact('movies'));
+public function moviesdata()
+{
+    $movies = Movie::orderBy('id', 'desc')->get();
+
+    foreach ($movies as $movie) {
+        // Convert "3,4,5" into [3,4,5]
+        $ids = explode(',', $movie->categories_id);
+
+        // Fetch category names from DB
+        $names = \App\Models\Category::whereIn('id', $ids)->pluck('name')->toArray();
+
+        // Add as extra property
+        $movie->category_names = $names;
     }
+
+    return view('admin.adminblade.movies', compact('movies'));
+}
 
 
 //this is backend addmovies 
@@ -260,8 +273,11 @@ public function addshow(){
 //form update show movie
     public function edit($id)
     {
+        $generes = Category::get();
         $movie = Movie::findOrFail($id);
-        return view('admin.adminblade.updatemovies', compact('movie'));
+        $selectedGenres = explode(',', $movie->categories_id);
+
+        return view('admin.adminblade.updatemovies', compact('movie','generes', 'selectedGenres'));
     }
 
 //update movie

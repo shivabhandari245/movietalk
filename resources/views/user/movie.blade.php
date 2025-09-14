@@ -34,9 +34,9 @@
                                 <label for="genre">Genre</label>
                                 <select class="filter-select" id="genre" name="category">
                                     <option value="">All Genres</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->slug }}" {{ request('category') == $category->slug ? 'selected' : '' }}>
-                                            {{ $category->name }}
+                                    @foreach($movies as $category)
+                                        <option value="{{ $category->category->slug }}" {{ request('category') == $category->category->slug ? 'selected' : '' }}>
+                                            {{ $category->category->name }}
                                         </option>
                                     @endforeach
                                 </select>

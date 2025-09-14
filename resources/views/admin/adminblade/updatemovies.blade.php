@@ -126,13 +126,14 @@
                 <div class="form-group">
                     <label class="form-label">Genres</label>
                     <div class="checkbox-group">
-                        @foreach(['Action','Drama','Comedy','Thriller','Romance'] as $genre)
-                            <label>
-                                <input type="checkbox" name="genres[]" value="{{ $genre }}"
-                                    {{ in_array($genre, old('genres', explode(',', $movie->genres ?? ''))) ? 'checked' : '' }}>
-                                {{ $genre }}
-                            </label>
-                        @endforeach
+                 @foreach($generes as $genre)
+    <input type="checkbox" 
+           name="genres[]" 
+           value="{{ $genre->id }}"
+           {{ in_array($genre->id, $selectedGenres) ? 'checked' : '' }}>
+    {{ $genre->name }}
+@endforeach
+
                     </div>
                 </div>
 

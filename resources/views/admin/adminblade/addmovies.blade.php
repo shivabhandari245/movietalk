@@ -114,7 +114,7 @@
                         <label class="form-label">Genres</label>
                         <div class="checkbox-group">
                             @foreach ($generes as $item)
-                                <input type="checkbox" name="genres[]" value="{{ $item->name }}"> {{ $item->name }}
+                                <input type="checkbox" name="genres[]" value="{{ $item->id }}"> {{ $item->name }}
                             @endforeach
                            </div>
                     </div>

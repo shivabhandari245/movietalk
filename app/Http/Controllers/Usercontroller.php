@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\User;
 use App\Models\Movie;
 use Illuminate\Http\Request;
@@ -200,7 +201,7 @@ public function login(Request $request)
 //form update show
     public function edit($id)
     {
-        
+    
         $user = User::findOrFail($id);
         return view('admin.adminblade.updateuser', compact('user'));
     }
