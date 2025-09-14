@@ -20,15 +20,13 @@
                 <div class="menu-toggle">
                     <i class="fas fa-bars"></i>
                 </div>
+
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search users...">
                 </div>
+
                 <div class="user-menu">
-                    <div class="notification">
-                        <i class="fas fa-bell"></i>
-                        <div class="notification-badge">3</div>
-                    </div>
                     <div class="user-profile">
                         <div class="user-avatar">AM</div>
                         <div>
@@ -44,30 +42,28 @@
                     <h1>User Management</h1>
                     <p>Manage all MovieTalk users and their permissions</p>
                 </div>
-                <a href="addusers.html" class="btn btn-primary">
-                    <i class="fas fa-user-plus"></i> Add New User
-                </a>
             </div>
 
             <!-- Users Table -->
-            <table class="user-table">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                        <th>Joined</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($users as $data)
+            <div class="table-responsive">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($users as $data)
                         <tr>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <div class="user-avatar-small">
-                                        {{ strtoupper(substr($data->name, 0, 2)) }} <!-- Initials -->
+                                        {{ strtoupper(substr($data->name, 0, 2)) }}
                                     </div>
                                     <div>{{ $data->name }}</div>
                                 </div>
@@ -75,27 +71,26 @@
                             <td>{{ $data->email }}</td>
                             <td>{{ $data->role }}</td>
                             <td>
-                                <span
-                                    class="status-badge {{ $data->status == 'Active' ? 'status-active' : 'status-inactive' }}">
+                                <span class="status-badge {{ $data->status == 'Active' ? 'status-active' : 'status-inactive' }}">
                                     {{ $data->status }}
                                 </span>
                             </td>
                             <td>{{ $data->created_at->format('M d, Y') }}</td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="btn btn-edit btn-sm">
+                                    <a href="{{ url('/admin/users/' . $data->id) }}" class="btn btn-edit btn-sm">
                                         <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <button class="btn btn-delete btn-sm">
+                                    </a>
+                                    <a href="{{ url('/admin/deleteusers/' . $data->id) }}" class="btn btn-delete btn-sm">
                                         <i class="fas fa-trash"></i> Delete
-                                    </button>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
-
-                </tbody>
-            </table>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             <!-- Pagination -->
             <div class="pagination">
@@ -107,7 +102,9 @@
             </div>
         </div>
     </div>
+</body>
 
-    <script src="{{ asset('adminjs/users.js') }}"></script>
+
+    {{-- <script src="{{ asset('adminjs/users.js') }}"></script> --}}
  
 @endsection

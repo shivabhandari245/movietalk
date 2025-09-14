@@ -27,19 +27,28 @@ public function login(Request $request)
         'password' => 'required|string',
     ]);
 
-    // Use 'web' guard
     if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password])) {
+        $request->session()->regenerate(); // Prevent 419 CSRF issues
         $user = Auth::user();
 
         if ($user->role == 'admin') {
-           return view('admin.adminblade.dashboard'); 
+            // Fetch data for admin dashboard
+            $usersCount = User::count();
+            $moviesCount = Movie::count();
+
+            return view('admin.adminblade.dashboard', [
+                'users' => $usersCount,
+                'movies' => $moviesCount,
+                'user' => $user,
+            ]);
         }
 
-        return redirect()->route('home')->with('success', 'Login successful!') ;  
+        return redirect()->route('home')->with('success', 'Login successful!');
     }
 
     return back()->with('error', 'Credentials did not match.');
 }
+
 
 
 
@@ -182,4 +191,51 @@ public function login(Request $request)
 
         return back()->with('success', 'Password updated successfully!');
     }
+
+
+
+
+//admin only
+
+//form update show
+    public function edit($id)
+    {
+        
+        $user = User::findOrFail($id);
+        return view('admin.adminblade.updateuser', compact('user'));
+    }
+
+
+    // update user
+   public function update(Request $request, $id)
+{
+    $user = User::findOrFail($id);
+
+    // Validate input
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $id,
+        'role' => 'required|string',
+    ]);
+
+    // Update user
+    $user->update([
+        'name' => $request->name,
+        'email' => $request->email,
+        'role' => $request->role,
+    ]);
+
+    // Redirect back to users list with success message
+    return redirect('/admin/users')->with('success', 'User updated successfully!');
+}
+
+ //delete user
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+        return redirect()->route('/admin/users')->with('success', 'User deleted successfully');
+    }
+
+
 }

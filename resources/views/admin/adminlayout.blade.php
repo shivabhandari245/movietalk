@@ -139,15 +139,17 @@
                     <span>Add Movies</span>
                 </a>
 
-                <a href="{{url(path: '/admin/reviews')}}" class="menu-item">
-                    <i class="fas fa-comments"></i>
-                    <span>Reviews</span>
+
+                <a href="{{url(path: '/admin/genres')}}" class="menu-item active">
+                    <i class="fas fa-film"></i>
+                    <span>Genres</span>
                 </a>
+                
                 
                 <div class="menu-label">System</div>
                 <a href="#" class="menu-item">
                     <i class="fas fa-cog"></i>
-                    <span>Settings</span>
+                    <span>Logout</span>
                 </a>
             </div>
         </div>

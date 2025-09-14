@@ -231,6 +231,8 @@ public function insertmovies(Request $request)
     $movie->description = $request->description;
     $movie->release_date = $request->release_date;
     $movie->runtime = $request->runtime;
+
+
     $movie->director = $request->director;
     $movie->content_rating = $request->content_rating;
     $movie->writer = $request->writer;
@@ -247,8 +249,91 @@ $movie->genres = implode(',', $request->genres);
 }
 
 public function addshow(){
-    return view('admin.adminblade.addmovies');
+    $generes = Category::get();
+    
+    return view('admin.adminblade.addmovies',compact('generes'));
 }
    
+
+
+
+//form update show movie
+    public function edit($id)
+    {
+        $movie = Movie::findOrFail($id);
+        return view('admin.adminblade.updatemovies', compact('movie'));
+    }
+
+//update movie
+public function update(Request $request, $id)
+{
+    // Validate input
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'release_date' => 'required|date',
+        'runtime' => 'required|integer|min:1',
+        'director' => 'required|string|max:255',
+        'writer' => 'required|string|max:255',
+        'production' => 'required|string|max:255',
+        'content_rating' => 'required|string',
+        'cast' => 'required|string',
+        'release_year' => 'required|string',
+        'genres' => 'nullable|array',
+        'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'trailer_url' => 'required|url', // 👈 match your DB column
+    ]);
+
+    // Find movie
+    $movie = Movie::findOrFail($id);
+
+    // Handle poster upload
+    if ($request->hasFile('poster')) {
+        if ($movie->poster && \Storage::exists('public/' . $movie->poster)) {
+            \Storage::delete('public/' . $movie->poster);
+        }
+
+        $posterPath = $request->file('poster')->store('movies', 'public');
+        $movie->poster = $posterPath;
+    }
+
+    // Update fields
+    $movie->title          = $request->title;
+    $movie->description    = $request->description;
+    $movie->release_date   = $request->release_date;
+    $movie->runtime        = $request->runtime;
+    $movie->director       = $request->director;
+    $movie->writer         = $request->writer;
+    $movie->production     = $request->production;
+    $movie->content_rating = $request->content_rating;
+    $movie->cast           = $request->cast;
+    $movie->release_year   = $request->release_year;
+    $movie->genres         = $request->genres ? implode(',', $request->genres) : null;
+    $movie->trailer_url    = $request->trailer_url; // 👈 FIXED
+
+    $movie->save();
+
+    return redirect()->route('admin.movies.list') // 👈 redirect to list
+                     ->with('success', 'Movie updated successfully!');
+}
+
+// delete movies
+public function destroy($id)
+{
+    $movie = Movie::findOrFail($id);
+    $movie->delete();
+    return redirect('admin/movies')->with('success', 'Movie deleted successfully');
+
+}
+
+//show review of particular movie
+
+    // Show reviews for a specific movie
+public function selectedmoviereview($id){
+        $movie = Movie::findOrFail($id);
+        $reviews = Review::where('movie_id', $id)->latest()->get();
+
+        return view('admin.adminblade.reviewshow', compact('movie', 'reviews'));
+    }
 
 }

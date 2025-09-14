@@ -50,7 +50,7 @@
                         <i class="fas fa-users"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value"></div>
+                        <div class="stat-value">{{ $users }}</div>
                         <div class="stat-label">Total Users</div>
                         <div class="stat-change up">
                             <i class="fas fa-arrow-up"></i> 12.5% from last week
@@ -63,7 +63,7 @@
                         <i class="fas fa-film"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value"></div>
+                        <div class="stat-value">{{ $movies }}</div>
                         <div class="stat-label">Movies</div>
                         <div class="stat-change up">
                             <i class="fas fa-arrow-up"></i> 3.2% from last week
@@ -76,7 +76,7 @@
                         <i class="fas fa-comment"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value">8,521</div>
+                        <div class="stat-value">{{ $reviews??0 }}</div>
                         <div class="stat-label">Reviews</div>
                     </div>
                 </div>

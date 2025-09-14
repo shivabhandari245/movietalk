@@ -17,20 +17,18 @@
      
      <!-- Main Content -->
         <div class="main">
-            <!-- Header -->
+         <!-- Header -->
             <div class="header">
                 <div class="menu-toggle">
                     <i class="fas fa-bars"></i>
                 </div>
+
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search movies...">
+                    <input type="text" placeholder="Search users...">
                 </div>
+
                 <div class="user-menu">
-                    <div class="notification">
-                        <i class="fas fa-bell"></i>
-                        <div class="notification-badge">3</div>
-                    </div>
                     <div class="user-profile">
                         <div class="user-avatar">AM</div>
                         <div>
@@ -45,10 +43,7 @@
                 <div class="dashboard-title">
                     <h1>Movie Management</h1>
                     <p>Manage all movies in the MovieTalk database</p>
-                </div>
-                <a href="addmovies.html" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Add New Movie
-                </a>
+                </div>              
             </div>
 
             <!-- Filter Bar -->
@@ -96,8 +91,8 @@
                      @foreach($movies as $data)
                     <tr>
                         <td>
-                            <img src="{{ $data->poster }}" alt="Inception" class="movie-poster">
-                        </td>
+                       <img src="{{ asset('storage/' . $data->poster) }}" alt="{{ $data->title }}" class="movie-poster">
+                            </td>
                         <td>
                             <div style="font-weight: 600;">{{ $data->title }}</div>
                             <div style="font-size: 13px; color: #777;">{{ $data->director }}</div>
@@ -106,16 +101,30 @@
                         <td>{{ $data->release_date }}</td>
                         <td>
                             <span class="rating-badge">
-                                <i class="fas fa-star"></i> {{ $data->userrating }}
+                                <i class="fas fa-star"></i> {{ $data->rating }}
                             </span>
                         </td>
                         <td><span class="status-badge status-active">{{ $data->status }}</span></td>
                         <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-edit btn-sm"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-delete btn-sm"><i class="fas fa-trash"></i></button>
-                            </div>
+
+
+
+                             <div class="action-buttons">
+
+         <a href="{{ url('/admin/reviews/' . $data->id ) }}"class="btn btn-edit btn-sm">                                     
+                          <i class="fas fa-comments"></i> Reviews
+                                    </a>
+
+
+                                    <a href="{{ url('/admin/movies/' . $data->id ) }}" class="btn btn-edit btn-sm">                                     
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+
+
+                                    <a href="{{ url('/admin/deletemovies/' . $data->id ) }}" class="btn btn-delete btn-sm">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
                         </td>
                     </tr>
                    @endforeach 
@@ -134,6 +143,6 @@
         </div>
     </div>
 
-      <script src="{{ asset('adminjs/movies.js') }}"></script>
+      {{-- <script src="{{ asset('adminjs/movies.js') }}"></script> --}}
 </body>
  @endsection

@@ -7,7 +7,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MyListController;
-use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 
 // Public Routes
@@ -70,15 +70,6 @@ Route::post('user/movie/{movieId}/rate', [MovieController::class, 'submitRating'
 
 
 
-Route::prefix('admin')->as('admin.')->group(function () {
-Route::get('/dashboard', [DashboardController::class, 'index']);
-Route::get('/users', [UserController::class, 'index']);
-Route::get('/movies', [MovieController::class, 'moviesdata']);
-Route::post('/addmovies', [MovieController::class, 'insertmovies']);
-Route::get('/addmovies', [MovieController::class, 'addshow']);
-
-});
-
 
 Route::get('/movies/search', [MovieController::class, 'search'])->name('movies.search');
 Route::middleware(['auth'])->group(function () {
@@ -87,4 +78,55 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/mylist/remove/{id}', [MyListController::class, 'destroy'])->name('mylist.remove');
     Route::post('/mylist/toggle-watched/{id}', [MyListController::class, 'toggleWatched'])->name('mylist.toggle-watched');
     Route::post('/mylist/update-progress/{id}', [MyListController::class, 'updateProgress'])->name('mylist.update-progress');
+});
+
+
+
+//admin routs
+Route::prefix('admin')->as('admin.')->group(function () {
+Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/movies', [MovieController::class, 'moviesdata'])->name('movies.list');
+Route::post('/addmovies', [MovieController::class, 'insertmovies']);
+Route::get('/addmovies', [MovieController::class, 'addshow']);
+Route::get('/genres', [CategoryController::class, 'viewgenres']);
+
+
+});
+
+
+//crud user
+Route::prefix('admin')->as('admin.')->group(function () {
+
+Route::get('/users/{id}', [UserController::class, 'edit'])->name('admin.users.update');
+
+Route::post('updateuser/{id}', [UserController::class, 'update'])->name('movies.store');
+
+Route::get('/deleteusers/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
+});
+
+
+//crud movie
+Route::prefix('admin')->as('admin.')->group(function () {
+
+Route::get('/movies/{id}', [MovieController::class, 'edit'])->name('admin.movies.update');
+
+Route::post('updatemovies/{id}', [MovieController::class, 'update'])->name('movies.store');
+
+Route::get('/deletemovies/{id}', [MovieController::class, 'destroy'])->name('movies.destroy');
+
+// Show all reviews for a movie
+Route::get('/reviews/{id}', [MovieController::class, 'selectedmoviereview'])->name('admin.movies.reviews');
+
+
+});
+
+
+//genre
+Route::prefix('admin')->as('admin.')->group(function () {
+Route::get('/addgenres', [CategoryController::class, 'addGenreForm']);
+Route::post('/addgenres', [CategoryController::class, 'insertgenres']);
+Route::delete('/genres/{id}', [CategoryController::class, 'deleteGenre'])->name('genres.delete');
+
 });

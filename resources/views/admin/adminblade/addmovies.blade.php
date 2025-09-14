@@ -113,19 +113,24 @@
                     <div class="form-group">
                         <label class="form-label">Genres</label>
                         <div class="checkbox-group">
-                           <input type="checkbox" name="genres[]" value="Action"> Action
-                            <input type="checkbox" name="genres[]" value="Drama"> Drama
-                            <input type="checkbox" name="genres[]" value="Comedy"> Comedy
-                            <input type="checkbox" name="genres[]" value="Thriller"> Thriller
-                            <input type="checkbox" name="genres[]" value="Romance"> Romance
-                        </div>
+                            @foreach ($generes as $item)
+                                <input type="checkbox" name="genres[]" value="{{ $item->name }}"> {{ $item->name }}
+                            @endforeach
+                           </div>
                     </div>
                     
-                    <div class="form-group">
+                    <div class="form-row">    
+                        <div class="form-group">
                         <label for="cast" class="form-label">Cast (comma separated)</label>
                         <input type="text" name="cast" id="cast" class="form-input" placeholder="e.g., Actor One, Actor Two, Actor Three" required>
-                    </div>
-                    
+                        </div>
+
+                      
+                        <div class="form-group">
+                            <label for="release_year" class="form-label">Release Year (XXXX)</label>
+                            <input type="number" name="release_year" id="release_year" class="form-input" placeholder="Enter release year in (xxxx)" required>
+                        </div>
+                      </div>
                     <div class="form-group">
                         <label class="form-label">Movie Poster</label>
                         <div class="file-upload"  id="posterUpload">
