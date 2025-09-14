@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Movie;
 use App\Models\Category;
+use App\Models\Rating;
 use App\Models\Review;
 use App\Models\Watchlist;
 use Illuminate\Http\Request;
@@ -74,10 +75,13 @@ class MovieController extends Controller
     {
         // Get the movie details
         $movie = Movie::with('category')->findOrFail($movieId);
-
+        $userrating = Rating::where('user_id', Auth::id());
+$userrating = Rating::where('movie_id', $movie->id)
+                    ->where('user_id', auth()->id())
+                    ->value('rating'); // this will return the user's previous rating
         // Get user reviews for the movie
-        $reviews = $movie->reviews()->with('user')->latest()->get();
-
+        //  $reviews = $movie->reviews()->with('user')->latest()->get();
+$rating = Rating::where('movie_id', $movieId)->avg('rating');
         // Get similar movies based on the same category
         $similarMovies = Movie::where('category_id', $movie->category_id)
             ->where('id', '!=', $movieId)
@@ -93,7 +97,7 @@ class MovieController extends Controller
                 ->exists();
         }
 
-        return view('user.moviedetail', compact('movie', 'similarMovies', 'reviews', 'inWatchlist'));
+        return view('user.moviedetail', compact('movie', 'similarMovies','rating', 'inWatchlist','userrating'));
     }
 public function search(Request $request)
     {
@@ -238,28 +242,56 @@ public function moviesdata()
 //this is backend addmovies 
 public function insertmovies(Request $request)
 {
-     $movie = new Movie;
+    // 1. Validation
+    $request->validate([
+        'title'          => 'required|string|max:255',
+        'description'    => 'required|string',
+        'release_date'   => 'required|date',
+        'runtime'        => 'required|integer|min:1',
+        'director'       => 'nullable|string|max:255',
+        'content_rating' => 'nullable|string|max:50',
+        'writer'         => 'nullable|string|max:255',
+        'production'     => 'nullable|string|max:255',
+        'genres'         => 'required|array',          // expecting array from form
+        'cast'           => 'nullable|string',
+        'poster'         => 'required|image|mimes:jpg,jpeg,png|max:2048', // poster must be image
+        'trailer'        => 'nullable|url',
+        'release_year'   => 'nullable|integer',
+    ]);
 
-    $movie->title = $request->title;
-    $movie->description = $request->description;
-    $movie->release_date = $request->release_date;
-    $movie->runtime = $request->runtime;
+    $movie = new Movie;
 
-
-    $movie->director = $request->director;
+    // 2. Assign fields
+    $movie->title          = $request->title;
+    $movie->description    = $request->description;
+    $movie->release_date   = $request->release_date;
+    $movie->runtime        = $request->runtime;
+    $movie->director       = $request->director;
     $movie->content_rating = $request->content_rating;
-    $movie->writer = $request->writer;
-    $movie->production = $request->production;
-$movie->genres = implode(',', $request->genres);
+    $movie->writer         = $request->writer;
+    $movie->production     = $request->production;
+
+    // store genres as comma separated
+    $movie->genres = implode(',', $request->genres); 
+    $movie->categories_id = implode(',', $request->genres); // if you are mapping to categories
+
     $movie->cast = $request->cast;
-    $movie->poster = $request->poster; // if image upload, handle file upload
-    $movie->trailer_url = $request->trailer;
+
+    // 3. Poster file upload
+    if ($request->hasFile('poster')) {
+        $posterPath = $request->file('poster')->store('posters', 'public'); 
+        // stored in storage/app/public/posters
+        $movie->poster = 'storage/' . $posterPath;  // so it can be accessed via asset()
+    }
+
+    $movie->trailer_url  = $request->trailer;
+    $movie->release_year = $request->release_year;
 
     $movie->save();
-    
 
     return redirect('/admin/movies')->with('success', 'Movie added successfully!');
 }
+
 
 public function addshow(){
     $generes = Category::get();
@@ -283,56 +315,55 @@ public function addshow(){
 //update movie
 public function update(Request $request, $id)
 {
-    // Validate input
+    // 1. Validation
     $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'required|string',
-        'release_date' => 'required|date',
-        'runtime' => 'required|integer|min:1',
-        'director' => 'required|string|max:255',
-        'writer' => 'required|string|max:255',
-        'production' => 'required|string|max:255',
-        'content_rating' => 'required|string',
-        'cast' => 'required|string',
-        'release_year' => 'required|string',
-        'genres' => 'nullable|array',
-        'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'trailer_url' => 'required|url', // 👈 match your DB column
+        'title'          => 'required|string|max:255',
+        'description'    => 'required|string',
+        'release_date'   => 'required|date',
+        'runtime'        => 'required|integer|min:1',
+        'director'       => 'nullable|string|max:255',
+        'content_rating' => 'nullable|string|max:50',
+        'writer'         => 'nullable|string|max:255',
+        'production'     => 'nullable|string|max:255',
+        'genres'         => 'required|array',          // expecting array from form
+        'cast'           => 'nullable|string',
+        'poster'         => 'required|image|mimes:jpg,jpeg,png|max:2048', // poster must be image
+        'trailer'        => 'nullable|url',
+        'release_year'   => 'nullable|integer',
     ]);
-
     // Find movie
     $movie = Movie::findOrFail($id);
 
-    // Handle poster upload
-    if ($request->hasFile('poster')) {
-        if ($movie->poster && \Storage::exists('public/' . $movie->poster)) {
-            \Storage::delete('public/' . $movie->poster);
-        }
-
-        $posterPath = $request->file('poster')->store('movies', 'public');
-        $movie->poster = $posterPath;
-    }
-
-    // Update fields
+   // 2. Assign fields
     $movie->title          = $request->title;
     $movie->description    = $request->description;
     $movie->release_date   = $request->release_date;
     $movie->runtime        = $request->runtime;
     $movie->director       = $request->director;
+    $movie->content_rating = $request->content_rating;
     $movie->writer         = $request->writer;
     $movie->production     = $request->production;
-    $movie->content_rating = $request->content_rating;
-    $movie->cast           = $request->cast;
-    $movie->release_year   = $request->release_year;
-    $movie->genres         = $request->genres ? implode(',', $request->genres) : null;
-    $movie->trailer_url    = $request->trailer_url; // 👈 FIXED
+
+    // store genres as comma separated
+    $movie->genres = implode(',', $request->genres); 
+    $movie->categories_id = implode(',', $request->genres); // if you are mapping to categories
+
+    $movie->cast = $request->cast;
+
+    // 3. Poster file upload
+    if ($request->hasFile('poster')) {
+        $posterPath = $request->file('poster')->store('posters', 'public'); 
+        // stored in storage/app/public/posters
+        $movie->poster = 'storage/' . $posterPath;  // so it can be accessed via asset()
+    }
+
+    $movie->trailer_url  = $request->trailer;
+    $movie->release_year = $request->release_year;
 
     $movie->save();
 
-    return redirect()->route('admin.movies.list') // 👈 redirect to list
-                     ->with('success', 'Movie updated successfully!');
+    return redirect('/admin/movies')->with('success', 'Movie updated successfully!');
 }
-
 // delete movies
 public function destroy($id)
 {
@@ -351,5 +382,29 @@ public function selectedmoviereview($id){
 
         return view('admin.adminblade.reviewshow', compact('movie', 'reviews'));
     }
+
+
+
+   public function rating($id, Request $request)
+{
+    $movieId = $id;
+
+    // Create a new rating record
+   $request->validate([
+            'rating' => 'required|numeric|min:0|max:5'
+        ]);
+
+         Rating::updateOrCreate(
+            [
+                'user_id'  => auth()->id(),
+                'movie_id' => $movieId
+            ],
+            [
+                'rating' => $request->rating
+            ]
+        );
+
+    return back()->with('success', 'Rating submitted successfully.');
+}
 
 }

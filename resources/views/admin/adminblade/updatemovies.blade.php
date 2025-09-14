@@ -157,11 +157,26 @@
                 </div>
 
                 <!-- Trailer -->
+                <div class="form-row">
                 <div class="form-group">
-                    <label for="trailer" class="form-label">Trailer URL (YouTube)</label>
-                    <input type="url" name="trailer_url" value="{{ old('trailer_url', $movie->trailer_url) }}" required>
+                   <input type="url" name="trailer_url" id="trailer_url" class="form-input"
+                  value="{{ old('trailer_url', $movie->trailer_url) }}" required>
+
                 </div>
 
+                <div class="form-group">
+                        <label for="category" class="form-label">Category</label>
+<select name="category" id="category" class="form-select" required>
+    <option value="">Select Category</option>
+    @foreach ($generes as $item)
+        <option value="{{ $item->id }}" {{ old('category', $movie->category) == $item->id ? 'selected' : '' }}>
+            {{ $item->name }}
+        </option>
+    @endforeach
+</select>
+
+                    </div>
+                </div>
                 <!-- Actions -->
                 <div class="form-actions">
                     <button type="submit" class="btn-primary">

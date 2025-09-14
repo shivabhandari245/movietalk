@@ -101,7 +101,7 @@
                         <div class="card-content">
                             <h3 class="card-title">{{ $movie->title }}</h3>
                             <div class="card-meta">
-                                <span>{{ $movie->release_year }} • {{ $movie->category->name }}</span>
+                                <span>{{ $movie->release_year }} </span>
                                 <span class="card-rating">
                                     <i class="fas fa-star" aria-hidden="true"></i> {{ $movie->rating }}
                                 </span>

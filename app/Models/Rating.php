@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Rating extends Model
 {
     use HasFactory;
-    
+    protected $table = 'rating';
     protected $fillable = ['user_id', 'movie_id', 'rating'];
     
     public function user()
@@ -32,8 +32,8 @@ use Illuminate\Database\Eloquent\Model;
 class Review extends Model
 {
     use HasFactory;
-    
-    protected $fillable = ['user_id', 'movie_id', 'review'];
+    protected $table = 'rating';
+    protected $fillable = ['user_id', 'movie_id', 'rating'];
     
     public function user()
     {

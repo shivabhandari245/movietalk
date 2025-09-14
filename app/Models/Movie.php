@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Movie extends Model
 {
     use HasFactory;
-
+protected $table = 'movies';
     protected $fillable = [
 
 'title',
@@ -23,6 +23,8 @@ class Movie extends Model
 'poster',
 'trailer_url',
 'category_id',
+'release_year',
+
     ];
   public function category()
     {

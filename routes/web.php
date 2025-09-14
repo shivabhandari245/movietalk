@@ -130,3 +130,5 @@ Route::post('/addgenres', [CategoryController::class, 'insertgenres']);
 Route::delete('/genres/{id}', [CategoryController::class, 'deleteGenre'])->name('genres.delete');
 
 });
+
+Route::post('movierating/{id}', [MovieController::class, 'rating']);

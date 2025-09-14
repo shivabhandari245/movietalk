@@ -78,38 +78,35 @@
         <!-- Ratings Section -->
         <div class="rating-container">
             <div class="user-rating">
-                <h3>Your Rating</h3>
-                <form id="rating-form" action="{{ route('movie.submit-rating', $movie->id) }}" method="POST">
-                    @csrf
-                    <div class="star-rating">
-                        @for($i=1; $i<=5; $i++)
-                        <label>
-                            <input type="radio" name="rating" value="{{ $i }}"> 
-                            <i class="fas fa-star"></i>
-                        </label>
-                        @endfor
-                    </div>
-                    <button type="submit" class="rating-submit">Submit Rating</button>
-                </form>
-            </div>
+    <h3>Your Rating</h3>
+    <form id="rating-form" action="{{ url('movierating/' . $movie->id ) }}" method="POST">
+        @csrf
+        <div class="star-rating">
+            @for($i=1; $i<=5; $i++)
+                <label>
+                    <input type="radio" name="rating" value="{{ $i }}"
+                        {{ (!empty($userrating) && $userrating == $i) ? 'checked' : '' }}> 
+                    <i class="fas fa-star"></i>
+                </label>
+            @endfor
+        </div>
+        <button type="submit" class="rating-submit">Submit Rating</button>
+    </form>
+</div>
 
-            <div class="rating-overview">
-                <div class="average-rating">
-                    <div class="rating-score">{{ number_format($movie->rating, 1) }}</div>
-                    <div class="rating-stars">
-                        @for($i=1; $i<=5; $i++)
-                            @if($i <= floor($movie->rating))
-                                <i class="fas fa-star"></i>
-                            @elseif($i - 0.5 <= $movie->rating)
-                                <i class="fas fa-star-half-alt"></i>
-                            @else
-                                <i class="far fa-star"></i>
-                            @endif
-                        @endfor
-                    </div>
-                    <div class="rating-count">Based on {{ $reviews->count() }} reviews</div>
-                </div>
-            </div>
+
+            <div class="rating-stars">
+    @for($i = 1; $i <= 5; $i++)
+        @if($i <= floor($rating))
+            <i class="fas fa-star"></i> <!-- Full star -->
+        @elseif($i - 0.5 <= $rating)
+            <i class="fas fa-star-half-alt"></i> <!-- Half star -->
+        @else
+            <i class="far fa-star"></i> <!-- Empty star -->
+        @endif
+    @endfor
+</div>
+
         </div>
         @endauth
     </div>
@@ -133,7 +130,7 @@
         <p>Please <a href="{{ route('user.login.form') }}">login</a> to write a review.</p>
         @endauth
 
-        <div class="reviews-list">
+        {{-- <div class="reviews-list">
             @forelse($reviews as $review)
             <div class="review-card">
                 <div class="review-header">
@@ -147,7 +144,7 @@
             @empty
             <p>No reviews yet.</p>
             @endforelse
-        </div>
+        </div> --}}
     </section>
 
     <!-- Similar Movies -->
