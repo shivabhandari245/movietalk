@@ -1,17 +1,35 @@
-@extends('layouts.app')  <!-- Assuming you have a base layout like this -->
+@extends('layouts.app')  
 
 @section('title', 'User Profile')
+<link rel="stylesheet" href="{{ asset('css/profile.css') }}">
 
 @section('content')
-<div class="profile-container">
+<div class="profile-container container">
     <div class="profile-header">
         <h2>User Profile</h2>
     </div>
 
-    <!-- User Profile Info -->
+    <!-- Flash Messages -->
+    @if (session('success'))
+        <div class="alert alert-success" style="margin-bottom: 20px;">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger" style="margin-bottom: 20px;">
+            <ul style="margin: 0; padding-left: 20px;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- User Info -->
     <div class="profile-info">
         <div class="avatar">
-            <img src="{{ auth()->user()->avatar ? asset('storage/avatars/' . auth()->user()->avatar) : 'https://www.gravatar.com/avatar/' . md5(auth()->user()->email) }}" alt="User Avatar">
+            <img id="avatarPreview" src="{{ auth()->user()->avatar ? asset('storage/avatars/' . auth()->user()->avatar) : 'https://www.gravatar.com/avatar/' . md5(auth()->user()->email) }}" alt="User Avatar">
         </div>
         <div class="user-details">
             <h3>{{ auth()->user()->name }}</h3>
@@ -20,7 +38,7 @@
         </div>
     </div>
 
-    <!-- Update Profile Form -->
+    <!-- Profile Update Form -->
     <div class="profile-update">
         <h3>Update Profile</h3>
         <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
@@ -37,17 +55,14 @@
                 <input type="email" name="email" id="email" class="form-control" value="{{ auth()->user()->email }}" required>
             </div>
 
-            <div class="form-group">
-                <label for="avatar">Change Avatar (optional)</label>
-                <input type="file" name="avatar" id="avatar" class="form-control">
-            </div>
+            
 
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="submit" class="btn-primary">Save Changes</button>
         </form>
     </div>
 
-    <!-- Change Password Section -->
-    <div class="password-change">
+    <!-- Password Change Form -->
+    <div class="password-change" style="margin-top: 40px;">
         <h3>Change Password</h3>
         <form action="{{ route('profile.password.update') }}" method="POST">
             @csrf
@@ -64,18 +79,21 @@
             </div>
 
             <div class="form-group">
-                <label for="confirm_password">Confirm New Password</label>
-                <input type="password" name="new_password_confirmation" id="confirm_password" class="form-control" required>
+                <label for="new_password_confirmation">Confirm New Password</label>
+                <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control" required>
             </div>
 
-            <button type="submit" class="btn btn-warning">Change Password</button>
+            <button type="submit" class="btn-warning">Change Password</button>
         </form>
     </div>
-
-    <!-- Logout Button -->
-    <form action="{{ route('logout') }}" method="POST" style="margin-top: 20px;">
-        @csrf
-        <button type="submit" class="btn btn-danger">Logout</button>
-    </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function previewAvatar(event) {
+        const preview = document.getElementById('avatarPreview');
+        preview.src = URL.createObjectURL(event.target.files[0]);
+    }
+</script>
+@endpush

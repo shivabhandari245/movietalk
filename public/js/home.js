@@ -25,9 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
     prevArrow.addEventListener('keypress', e => { if (e.key === 'Enter') showSlide((currentSlide - 1 + slides.length) % slides.length); });
     nextArrow.addEventListener('keypress', e => { if (e.key === 'Enter') showSlide((currentSlide + 1) % slides.length); });
 
-    // -------------------
-    // Watchlist Functionality
-    // -------------------
+  
     const watchlistForms = document.querySelectorAll('form.add-watchlist-form');
 
     watchlistForms.forEach(form => {
@@ -75,18 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalVideo = document.getElementById('modalTrailer');
     const closeModal = modal.querySelector('.close-modal');
 
-    document.querySelectorAll('.watch-btn').forEach(btn => {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            const trailerUrl = btn.dataset.trailer;
-            if (trailerUrl) {
-                modalVideo.src = trailerUrl;
-                modal.classList.add('open');
-            } else {
-                alert('Trailer not available.');
-            }
-        });
-    });
+   
 
     closeModal.addEventListener('click', () => {
         modal.classList.remove('open');
