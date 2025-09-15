@@ -242,7 +242,7 @@ public function moviesdata()
 //this is backend addmovies 
 public function insertmovies(Request $request)
 {
-    // 1. Validation
+     // 1. Validation
     $request->validate([
         'title'          => 'required|string|max:255',
         'description'    => 'required|string',
@@ -257,9 +257,9 @@ public function insertmovies(Request $request)
         'poster'         => 'required|image|mimes:jpg,jpeg,png|max:2048', // poster must be image
         'trailer'        => 'nullable|url',
         'release_year'   => 'nullable|integer',
+        'category'    => 'required',
     ]);
-
-    $movie = new Movie;
+     $movie = new Movie;
 
     // 2. Assign fields
     $movie->title          = $request->title;
@@ -273,7 +273,7 @@ public function insertmovies(Request $request)
 
     // store genres as comma separated
     $movie->genres = implode(',', $request->genres); 
-    $movie->categories_id = implode(',', $request->genres); // if you are mapping to categories
+    $movie->category_id =  $request->category; // if you are mapping to categories
 
     $movie->cast = $request->cast;
 
@@ -330,6 +330,7 @@ public function update(Request $request, $id)
         'poster'         => 'required|image|mimes:jpg,jpeg,png|max:2048', // poster must be image
         'trailer'        => 'nullable|url',
         'release_year'   => 'nullable|integer',
+        'category_id'    => 'required|array',
     ]);
     // Find movie
     $movie = Movie::findOrFail($id);
@@ -346,7 +347,7 @@ public function update(Request $request, $id)
 
     // store genres as comma separated
     $movie->genres = implode(',', $request->genres); 
-    $movie->categories_id = implode(',', $request->genres); // if you are mapping to categories
+    $movie->category_id = implode(',', $request->genres); // if you are mapping to categories
 
     $movie->cast = $request->cast;
 
